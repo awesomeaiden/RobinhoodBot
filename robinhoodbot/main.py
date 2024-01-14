@@ -17,9 +17,11 @@ def safe_division(n, d):
     return n / d if d else 0
 
 def get_historicals(ticker, intervalArg, spanArg, boundsArg):
-    history = r.get_stock_historicals(ticker,interval=intervalArg,span=spanArg,bounds=boundsArg)
+    history = None
+    if (ticker != "BTC"):
+        history = r.get_stock_historicals(ticker, interval=intervalArg, span=spanArg, bounds=boundsArg)
 
-    #If it's not a stock ticker, try it as a crypto ticker
+    # If it's not a stock ticker, try it as a crypto ticker
     if(history is None or None in history):
         history = r.get_crypto_historicals(ticker,interval=intervalArg,span=spanArg,bounds=boundsArg)
 
@@ -150,7 +152,7 @@ def five_year_check(stockTicker):
     if(instrument is None or len(instrument) == 0):
         return True
     list_date = instrument[0].get("list_date")
-    if ((pd.Timestamp("now") - pd.to_datetime(list_date)) < pd.Timedelta("5 Y")):
+    if ((pd.Timestamp("now") - pd.to_datetime(list_date)) < pd.Timedelta("1825 D")):
         return True
     fiveyear =  get_historicals(stockTicker, "day", "5year", "regular")
     if (fiveyear is None or None in fiveyear):
@@ -183,7 +185,10 @@ def golden_cross(stockTicker, n1, n2, days, direction=""):
     if(direction == "above" and not five_year_check(stockTicker)):
         return False
     
-    history = get_historicals(stockTicker, "day", "year", "regular")
+    if (stockTicker == "BTC"):
+        history = cr
+    else:
+        history = get_historicals(stockTicker, "day", "year", "regular")
 
     #Couldn't get pricing data
     if(history is None or None in history):
@@ -286,7 +291,7 @@ def scan_stocks():
     if(len(potential_buys) > 0):
         buy_holdings(potential_buys, profile_data, holdings_data)
     if(len(sells) > 0):
-        update_trade_history(sells, holdings_data, "tradehistory.txt")
+        update_trade_history(sells, holdings_data, "tradehistory.json")
     print("----- Scan over -----\n")
     if debug:
         print("----- DEBUG MODE -----\n")
