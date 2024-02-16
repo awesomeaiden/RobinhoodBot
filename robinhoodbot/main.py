@@ -22,8 +22,8 @@ def get_historicals(ticker, intervalArg, spanArg, boundsArg):
         history = r.get_stock_historicals(ticker, interval=intervalArg, span=spanArg, bounds=boundsArg)
 
     # If it's not a stock ticker, try it as a crypto ticker
-    if(history is None or None in history):
-        history = r.get_crypto_historicals(ticker,interval=intervalArg,span=spanArg,bounds=boundsArg)
+    # if(history is None or None in history):
+    #     history = r.get_crypto_historicals(ticker,interval=intervalArg,span=spanArg,bounds=boundsArg)
 
     return history
 
@@ -186,7 +186,8 @@ def golden_cross(stockTicker, n1, n2, days, direction=""):
         return False
     
     if (stockTicker == "BTC"):
-        history = cr
+        # history = get_crypto_historicals(stockTicker, "day", "year", "regular")
+        history = None
     else:
         history = get_historicals(stockTicker, "day", "year", "regular")
 
